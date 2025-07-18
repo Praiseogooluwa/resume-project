@@ -1,12 +1,7 @@
-# CORE ML (ONLY what matcher.py needs)
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.2.2+cpu
+torch==2.7.1+cpu  # Latest stable CPU version for Python 3.13
 sentence-transformers==2.7.0
-
-# BASIC SERVER (ONLY what app.py needs)
 fastapi==0.109.2
 uvicorn==0.27.1
-
-# ESSENTIAL UTILITIES
-python-dotenv==1.0.1
 requests==2.31.0
+python-dotenv==1.0.1
