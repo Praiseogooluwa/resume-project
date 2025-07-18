@@ -3,12 +3,30 @@
   "builds": [
     {
       "src": "app.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "includeFiles": [
+          "*.py",
+          "requirements.txt"
+        ],
+        "suppressStream": true
+      }
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/match-jobs",
+      "methods": ["POST"],
+      "dest": "app.py"
+    },
+    {
+      "src": "/get-jobs",
+      "methods": ["GET"],
+      "dest": "app.py"
+    },
+    {
+      "src": "/docs",
       "dest": "app.py"
     }
   ]
