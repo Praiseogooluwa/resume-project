@@ -1,16 +1,27 @@
 {
   "version": 2,
-  "builds": [{
-    "src": "app.py",
-    "use": "@vercel/python",
-    "config": {
-      "maxLambdaSize": "50mb",
-      "includeFiles": ["*.py", "requirements.txt"]
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "includeFiles": ["*.py", "requirements.txt", "static/*"]
+      }
     }
-  }],
+  ],
   "routes": [
-    {"src": "/openapi.json", "dest": "app.py"},
-    {"src": "/docs(/?.*)", "dest": "app.py"},
-    {"src": "/(.*)", "dest": "app.py"}
+    {
+      "src": "/static/(.*)",
+      "dest": "app.py"
+    },
+    {
+      "src": "/",
+      "dest": "app.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
   ]
 }
