@@ -1,18 +1,12 @@
-# ML Core
+# CORE ML (ONLY what matcher.py needs)
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.2.1+cpu  # CPU-only version (50% smaller)
+torch==2.2.2+cpu
 sentence-transformers==2.7.0
 
-# API Server
+# BASIC SERVER (ONLY what app.py needs)
 fastapi==0.109.2
 uvicorn==0.27.1
-python-multipart==0.0.7
 
-# Job API
-requests==2.31.0
-
-# Environment
+# ESSENTIAL UTILITIES
 python-dotenv==1.0.1
-
-# Optimizations
-numpy==1.26.4  # Lock version for compatibility
+requests==2.31.0
