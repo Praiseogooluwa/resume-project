@@ -1,10 +1,11 @@
 from dotenv import load_dotenv
 load_dotenv()
+
 from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 import requests
 import os
 import io
@@ -19,8 +20,7 @@ app = FastAPI(
     version="2.1",
     docs_url="/docs",
     redoc_url=None,
-    openapi_url="/openapi.json",
-    servers=[{"url": "https://resume-api-red.vercel.app", "description": "Production"}]
+    openapi_url="/openapi.json"
 )
 
 # Serve static files for favicon
@@ -79,7 +79,6 @@ async def favicon():
 def extract_text_from_pdf(uploaded_file: UploadFile) -> str:
     """Secure PDF text extraction with validation"""
     try:
-        # Read first 5MB to check size
         pdf_data = uploaded_file.file.read(5_000_000)
         remaining_bytes = uploaded_file.file.read(1)
         if remaining_bytes:
@@ -110,12 +109,6 @@ async def match_jobs(
     file: UploadFile = File(..., description="PDF resume file (max 5MB)"),
     query: str = Form(..., min_length=2, description="Job search query")
 ) -> Dict:
-    """
-    Processes uploaded resume PDF and returns top job matches using AI.
-    - Supports only PDF files under 5MB
-    - Requires at least 2-character search query
-    """
-    # File validation
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(400, detail="Only PDF files are accepted")
 
@@ -123,7 +116,6 @@ async def match_jobs(
     if not resume_text or "Error" in resume_text:
         raise HTTPException(400, detail=resume_text.replace("Error: ", ""))
 
-    # ML service integration
     try:
         ml_service_url = os.getenv("RENDER_ML_URL")
         if not ml_service_url:
@@ -136,7 +128,7 @@ async def match_jobs(
                 "query": query.strip(),
                 "client_ip": request.client.host
             },
-            timeout=12,  # Slightly above Vercel's 10s limit
+            timeout=12,
             headers={
                 "Content-Type": "application/json",
                 "Accept": "application/json",
@@ -168,11 +160,6 @@ async def get_jobs(
     request: Request,
     query: str = Query(..., min_length=2, max_length=100, description="Job search keywords")
 ) -> Dict:
-    """
-    Retrieves live job listings from JSearch API.
-    - Requires 2-100 character search query
-    - Returns first page of results
-    """
     try:
         api_key = os.getenv("JSEARCH_API_KEY")
         if not api_key:
@@ -197,6 +184,7 @@ async def get_jobs(
         jobs = response.json().get("data", [])
         return {
             "jobs": [{
+
                 "title": job.get("job_title", "No title"),
                 "company": job.get("employer_name", "Unknown company"),
                 "location": ", ".join(filter(None, [
@@ -216,7 +204,6 @@ async def get_jobs(
     except Exception as e:
         raise HTTPException(500, detail=f"Processing error: {str(e)}")
 
-# Health check endpoint
 @app.get("/health", include_in_schema=False)
 async def health_check():
     return {
@@ -227,12 +214,3 @@ async def health_check():
             "jsearch_api": os.getenv("JSEARCH_API_KEY") is not None
         }
     }
-
-# Ensure OpenAPI schema is generated at startup
-@app.on_event("startup")
-async def startup_event():
-    custom_openapi()
-    # Create default favicon if missing
-    favicon_path = static_dir / "favicon.ico"
-    if not favicon_path.exists():
-        favicon_path.write_bytes(b"")  # Empty favicon
