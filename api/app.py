@@ -103,7 +103,7 @@ async def match_jobs(
 
     # ML service integration
     try:
-        ml_service_url = os.getenv("RENDER_ML_URL")
+        ml_service_url = os.getenv("https://resume-ml-api.onrender.com")
         if not ml_service_url:
             raise RuntimeError("ML service URL not configured")
 
