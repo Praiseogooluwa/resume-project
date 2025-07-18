@@ -1,7 +1,9 @@
+import requests
 import os
 from sentence_transformers import SentenceTransformer, util
 from functools import lru_cache
 import torch
+
 
 # Optimized model loading with caching
 @lru_cache(maxsize=1)
@@ -51,7 +53,7 @@ def get_top_matches(resume_text, query, top_k=3):
             return [format_job(jobs[i], similarities[i]) for i in top_indices]
 
     except Exception as e:
-        print(f"⚠️ ML processing error: {str(e)}")
+        print(f"⚠️ ML Error: {str(e)}", flush=True)  # Force log output
         return []
 
 def format_job(job, similarity_score):
