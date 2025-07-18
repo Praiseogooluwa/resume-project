@@ -2,26 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "50mb",
-        "includeFiles": ["*.py", "requirements.txt", "static/*"]
-      }
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
-      "dest": "app.py"
-    },
-    {
-      "src": "/",
-      "dest": "app.py"
-    },
-    {
       "src": "/(.*)",
-      "dest": "app.py"
+      "dest": "api/index.py"
     }
   ]
 }
