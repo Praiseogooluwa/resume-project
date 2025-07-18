@@ -1,16 +1,6 @@
-# Core
 fastapi==0.109.2
 uvicorn==0.27.1
-
-# File Processing
 python-multipart==0.0.7
-pymupdf==1.24.1  # Lighter alternative to fitz
-
-# API Calls
+pymupdf==1.24.1
 requests==2.31.0
-
-# Vercel Adapter
-mangum==0.17.0
-
-# Environment
 python-dotenv==1.0.1
