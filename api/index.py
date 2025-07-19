@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from mangum import Mangum
 import requests
 import os
@@ -14,7 +14,8 @@ app = FastAPI(
     version="2.1",
     docs_url="/docs",
     redoc_url=None,
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
+    root_path="/api"  # Important for Vercel routing
 )
 
 # CORS middleware - simplified for serverless
@@ -148,4 +149,4 @@ async def health_check():
     }
 
 # Required for Vercel
-handler = Mangum(app)
+handler = Mangum(app, lifespan="off")
