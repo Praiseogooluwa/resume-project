@@ -4,3 +4,4 @@ requests
 PyMuPDF
 python-multipart
 uvicorn
+httpx>=0.24.0
