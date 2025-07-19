@@ -69,21 +69,17 @@ async def match_jobs(
             raise HTTPException(status_code=500, detail="ML service URL not configured")
 
         # Debug: Let's see what we're sending
-        payload = {
-            "resume_text": resume_text,
-            "query": query.strip()
-        }
-        
         print(f"Sending to ML service: {ml_url}/predict")
-        print(f"Payload keys: {list(payload.keys())}")
         print(f"Resume text length: {len(resume_text)}")
         print(f"Query: {query.strip()}")
 
         response = requests.post(
             f"{ml_url.rstrip('/')}/predict",
-            json=payload,
+            params={  # Send as query parameters instead of JSON
+                "resume_text": resume_text,
+                "query": query.strip()
+            },
             timeout=60,  # Increased timeout
-            headers={"Content-Type": "application/json"}
         )
         
         print(f"ML service response status: {response.status_code}")
