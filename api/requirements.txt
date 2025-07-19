@@ -1,0 +1,6 @@
+fastapi
+mangum
+requests
+PyMuPDF
+python-multipart
+uvicorn
